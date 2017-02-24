@@ -15,7 +15,7 @@ var twitter = require('twit');
 
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/results', (req, res, next) => {
 
   var t = new twitter({
     consumer_key: 'kjAkJECqGqGgbp8rTjKb3g7t8',
@@ -32,15 +32,20 @@ router.get('/', (req, res, next) => {
     var id = data[name].id;
     lol.getCurrentGame(id, region, (err1, data1) => {
       // console.log(data1);
+      if (!err1) {
       data1.participants.map((x) => {
         // console.log(x.summonerName)
         t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
           console.log(x.summonerName + ": "+ data.name);  // 
         });
       })
+      }
     });
   });
-  res.render('index', { title: 'Express' });
+  res.render('results', { title: 'Express' });
 });
 
+router.get('/', (req,res,next) => {
+  res.render('index')
+})
 module.exports = router;
