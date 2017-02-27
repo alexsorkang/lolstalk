@@ -14,29 +14,40 @@ router.post('/', (req,res,next) => {
     app_only_auth: true
   });
 
-  var name = req.body.sum_name;
-  name = name.replace(/\s+/g, '').toLowerCase();
+  var ogname = req.body.sum_name;
+  var name = ogname.replace(/\s+/g, '').toLowerCase();
   var region = req.body.region;
   var results = {};
   lol.init('RGAPI-ed53eab6-4dd0-4b4f-9d82-41c356030dd8', region)
   lol.Summoner.getByName(name, region, (err,data) => {
-    var id = data[name].id;
-    lol.getCurrentGame(id, region, (err1, data1) => {
-      if (!err1) {
-      var counter = 0
-      data1.participants.map((x) => {
-        t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
-          console.log(x.summonerName + ": "+ data.name);  // 
-          results[x.summonerName] = data.name;
-          counter+=1;
-          if (counter == 10) {
-            console.log(results)
+    if (err) {
+      t.get('users/show', {screen_name: ogname}, (err, data, response) => {
+        console.log(data)
+        results[ogname] = data.name;
+        res.render('results', { title: 'Express', data: results});
+      });
+    } else {
+      var id = data[name].id;
+      lol.getCurrentGame(id, region, (err1, data1) => {
+        if (!err1) {
+        var counter = 0
+        data1.participants.map((x) => {
+          t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
+            results[x.summonerName] = data.name;
+            counter+=1;
+            if (counter == 10) {
+              res.render('results', { title: 'Express', data: results});
+            }
+          });
+        })
+        } else {
+          t.get('users/show', {screen_name: ogname}, (err, data, response) => {
+            results[ogname] = data.name;
             res.render('results', { title: 'Express', data: results});
-          }
-        });
-      })
-      }
-    });
+          });
+        }
+      });
+    }
   });
 })
 module.exports = router;

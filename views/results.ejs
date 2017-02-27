@@ -35,13 +35,13 @@
 
     </form>
 
-    
+
     <div class="row">
       <div class="col-sm-6">
         <ul>
         <% for (x in data) { %>
           <li>
-          <%= x + ": " + data.x %>
+          <%= x + ": " + data[x] %>
           </li>
         <% } %>
         </ul>
