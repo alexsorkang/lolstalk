@@ -28,7 +28,7 @@ router.post('/', (req,res,next) => {
     if (err) {
       t.get('users/show', {screen_name: ogname}, (err, data, response) => {
         results[ogname] = data.name;
-        res.render('results', { title: 'Express', data: results});
+        res.render('results', { title: 'Express', data: results, type: 1});
       });
     } else {
       var id = data[name].id;
