@@ -18,11 +18,15 @@ router.post('/', (req,res,next) => {
   var name = ogname.replace(/\s+/g, '').toLowerCase();
   var region = req.body.region;
   var results = {};
+  results['100'] = {};
+  results['200'] = {};
+
   lol.init('RGAPI-ed53eab6-4dd0-4b4f-9d82-41c356030dd8', region)
   lol.Summoner.getByName(name, region, (err,data) => {
+    // error if summoner does not exist
+    // still tries to get twitter of that input
     if (err) {
       t.get('users/show', {screen_name: ogname}, (err, data, response) => {
-        console.log(data)
         results[ogname] = data.name;
         res.render('results', { title: 'Express', data: results});
       });
@@ -30,16 +34,19 @@ router.post('/', (req,res,next) => {
       var id = data[name].id;
       lol.getCurrentGame(id, region, (err1, data1) => {
         if (!err1) {
-        var counter = 0
-        data1.participants.map((x) => {
-          t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
-            results[x.summonerName] = data.name;
-            counter+=1;
-            if (counter == 10) {
-              res.render('results', { title: 'Express', data: results});
-            }
-          });
-        })
+          var counter = 0
+          data1.participants.map((x) => {
+            t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
+              results[x.teamId][x.summonerName] = data.name;
+              counter+=1;
+              if (counter == 10) {
+                console.log(results)
+                res.render('results', { title: 'Express', data: results});
+              }
+            });
+          })
+        // error if user is found but not in a game
+        // still finds the data of the user
         } else {
           t.get('users/show', {screen_name: ogname}, (err, data, response) => {
             results[ogname] = data.name;

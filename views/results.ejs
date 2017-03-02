@@ -43,15 +43,26 @@
 
 
     <div class="row">
-      <div class="col-sm-6">
-        <ul>
-        <% for (x in data) { %>
-          <li>
-          <%= x + ": " + data[x] %>
-          </li>
-        <% } %>
-        </ul>
-      </div>
+      <% for (team in data) { %>
+        <div class="col-sm-6">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>summoner name</th>
+                <th>possible real name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (x in data[team]) { %>
+                <tr>
+                  <th><%= x %></th>
+                  <th><%= data[team][x] %></th>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
     </div>
   </div>
 </body>
