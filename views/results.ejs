@@ -43,7 +43,7 @@
 
 
     <% if (type == 1) { %>
-      <% for (team in data) { %>
+      <% for (var team in data) { %>
         <div class="row">
           <div class="col">
             <table class="table">
@@ -51,17 +51,23 @@
                 <tr>
                   <th>summoner name</th>
                   <th>possible real name</th>
+                  <th>champion</th>
                 </tr>
               </thead>
               <tbody>
-                <% for (x in data[team]) { %>
+                <% for (var x in data[team]) { %>
+                  <% var result = data[team][x] %>
                   <tr>
-                    <td><%= x %></td>
-                    <% if (data[team][x]) { %>
-                      <td><%= data[team][x] %></td>
+
+                    <td><%= result.summonerName %></td>
+
+                    <% if (result.realName) { %>
+                      <td><%= result.realName %></td>
                     <% } else { %>
                       <td>not found</td>
                     <% } %>
+
+                    <td><image src=<%= "http://ddragon.leagueoflegends.com/cdn/7.4.3/img/champion/" + result.image.full %> </image> <%= result.championName %></td>
                   </tr>
                 <% } %>
               </tbody>

@@ -37,18 +37,23 @@ router.post('/', (req,res,next) => {
       var id = data[name].id;
       lol.getCurrentGame(id, region, (err1, data1) => {
         if (!err1) {
-          results['100'] = {};
-          results['200'] = {};
+          results['100'] = [];
+          results['200'] = [];
           var counter = 0
           data1.participants.map((x) => {
-            t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
-              results[x.teamId][x.summonerName] = data.name;
-              counter+=1;
-              if (counter == 10) {
-                res.render('results', { title: 'Express', data: results, type:1});
-              }
+            t.get('users/show', {screen_name: x.summonerName}, (err2, data2, response) => {
+              lol.Static.getChampionById(x['championId'], {champData: 'image'}, (err3, data3) => {
+                results[x.teamId].push({summonerName:x.summonerName, realName:data2.name, championName:data3.name, championId:data3.id, image:data3.image})
+                
+                counter+=1;
+                if (counter == 10) {
+                  res.render('results', { title: 'Express', data: results, type:1});
+                }
+              });
+              
             });
           })
+          
         // error if user is found but not in a game
         // still finds the data of the user
         } else {
