@@ -8,7 +8,7 @@
 
     <div class="row">
       <div class="col">
-        <h2>find that guy's real name</h2>
+        <h2>find the real name of the guy in your game</h2>
       </div>
     </div>
 
@@ -42,28 +42,84 @@
     </form>
 
 
-    <div class="row">
+    <% if (type == 1) { %>
       <% for (team in data) { %>
-        <div class="col-sm-6">
+        <div class="row">
+          <div class="col">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>summoner name</th>
+                  <th>possible real name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (x in data[team]) { %>
+                  <tr>
+                    <td><%= x %></td>
+                    <% if (data[team][x]) { %>
+                      <td><%= data[team][x] %></td>
+                    <% } else { %>
+                      <td>not found</td>
+                    <% } %>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
+    <% } else if (type == 2) { %>
+      <h3>summoner by that name does not exist</h3>
+      <div class="row">
+        <div class="col">
           <table class="table">
             <thead>
               <tr>
                 <th>summoner name</th>
                 <th>possible real name</th>
               </tr>
-            </thead>
             <tbody>
-              <% for (x in data[team]) { %>
-                <tr>
-                  <th><%= x %></th>
-                  <th><%= data[team][x] %></th>
-                </tr>
-              <% } %>
+            </thead>
+              <tr>
+                <td><%= Object.keys(data)[0] %></td>
+                <% if (Object.keys(data)[1]) { %>
+                  <td><%= Object.keys(data)[1] %></td>
+                <% } else { %>
+                  <td>not found</td>
+                <% } %>
+
+              </tr> 
             </tbody>
           </table>
         </div>
-      <% } %>
-    </div>
+      </div>
+    <% } else if (type == 3) { %>
+      <h4>summoner is not in game</h4>
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>summoner name</th>
+                <th>possible real name</th>
+              </tr>
+            <tbody>
+            </thead>
+              <tr>
+                <td><%= Object.keys(data)[0] %></td>
+                <% if (Object.keys(data)[1]) { %>
+                  <td><%= Object.keys(data)[1] %></td>
+                <% } else { %>
+                  <td>not found</td>
+                <% } %>
+              </tr> 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% } %>
+    
   </div>
 </body>
 </html>

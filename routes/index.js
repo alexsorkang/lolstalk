@@ -18,9 +18,12 @@ router.post('/', (req,res,next) => {
   var name = ogname.replace(/\s+/g, '').toLowerCase();
   var region = req.body.region;
   var results = {};
-  results['100'] = {};
-  results['200'] = {};
+  
 
+  // types
+  // 1 - summoner does not exist
+  // 2 - summoner exists but not in game
+  // 3 - summoner in game
   lol.init('RGAPI-ed53eab6-4dd0-4b4f-9d82-41c356030dd8', region)
   lol.Summoner.getByName(name, region, (err,data) => {
     // error if summoner does not exist
@@ -28,33 +31,34 @@ router.post('/', (req,res,next) => {
     if (err) {
       t.get('users/show', {screen_name: ogname}, (err, data, response) => {
         results[ogname] = data.name;
-        res.render('results', { title: 'Express', data: results, type: 1});
+        res.render('results', { title: 'Express', data: results, type: 2});
       });
     } else {
       var id = data[name].id;
       lol.getCurrentGame(id, region, (err1, data1) => {
         if (!err1) {
+          results['100'] = {};
+          results['200'] = {};
           var counter = 0
           data1.participants.map((x) => {
             t.get('users/show', {screen_name: x.summonerName}, (err, data, response) => {
               results[x.teamId][x.summonerName] = data.name;
               counter+=1;
               if (counter == 10) {
-                console.log(results)
-                res.render('results', { title: 'Express', data: results});
+                res.render('results', { title: 'Express', data: results, type:1});
               }
             });
           })
         // error if user is found but not in a game
         // still finds the data of the user
         } else {
-          t.get('users/show', {screen_name: ogname}, (err, data, response) => {
-            results[ogname] = data.name;
-            res.render('results', { title: 'Express', data: results});
+          t.get('users/show', {screen_name: name}, (err, data, response) => {
+            results[name] = data.name;
+            res.render('results', { title: 'Express', data: results, type:3});
           });
         }
       });
     }
   });
-})
+}),
 module.exports = router;
