@@ -58,7 +58,8 @@
                 <% for (var x in data[team]) { %>
                   <% var result = data[team][x] %>
                   <tr>
-                    <td><%= result.championName %></td>
+                    <td><img class="champportrait" src=<%= "http://ddragon.leagueoflegends.com/cdn/7.4.3/img/champion/" + result.image.full %>>  <%= result.championName %></td>
+                    <!-- <td><%= result.championName %></td> -->
                     <td><%= result.summonerName %></td>
 
                     <% if (result.realName) { %>
@@ -67,7 +68,7 @@
                       <td>not found</td>
                     <% } %>
 
-                    <!-- <td><img src=<%= "http://ddragon.leagueoflegends.com/cdn/7.4.3/img/champion/" + result.image.full %>>  <%= result.championName %></td> -->
+                    
                     
                   </tr>
                 <% } %>

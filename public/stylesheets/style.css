@@ -1,5 +1,5 @@
 body {
-    padding-top: 200px;
+    padding-top: 150px;
     font: 14px "Poppins", Helvetica, Arial, sans-serif;
   }
   @media (max-width: 979px) {
@@ -12,3 +12,11 @@ a {
   color: #00B7FF;
 }
 
+.champportrait {
+	width: 28px;
+	height: 28px;
+}
+
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
