@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var lol = require('leagueapi');
 var twitter = require('twit');
-// var ig = require('instagram-node').instagram();
-var instagram = require('instagram-api');
 
 router.get('/', (req,res,next) => {
   res.render('index')
