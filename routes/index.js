@@ -2,15 +2,22 @@ var express = require('express');
 var router = express.Router();
 var lol = require('leagueapi');
 var twitter = require('twit');
+// var ig = require('instagram-node').instagram();
+var instagram = require('instagram-api');
 
 router.get('/', (req,res,next) => {
   res.render('index')
 })
 
 router.post('/', (req,res,next) => { 
+
+  // twitter 
+  var t_consumer_key = 'kjAkJECqGqGgbp8rTjKb3g7t8'
+  var t_consumer_secret = 'zgCuZYJXaH4ACLRzJK3gsZFw5S9IrrXEVkQr72sWY09IDSgz8Z'
+
   var t = new twitter({
-    consumer_key: 'kjAkJECqGqGgbp8rTjKb3g7t8',
-    consumer_secret: 'zgCuZYJXaH4ACLRzJK3gsZFw5S9IrrXEVkQr72sWY09IDSgz8Z',
+    consumer_key: t_consumer_key,
+    consumer_secret: t_consumer_secret,
     app_only_auth: true
   });
 
@@ -18,7 +25,6 @@ router.post('/', (req,res,next) => {
   var name = ogname.replace(/\s+/g, '').toLowerCase();
   var region = req.body.region;
   var results = {};
-  
 
   // types
   // 1 - summoner does not exist
