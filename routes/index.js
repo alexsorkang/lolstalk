@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var lol = require('leagueapi');
 var twitter = require('twit');
+var Crawler = require("js-crawler");
+var cheerio = require('cheerio');
 
 router.get('/', (req,res,next) => {
   res.render('index')
@@ -23,6 +25,38 @@ router.post('/', (req,res,next) => {
   var name = ogname.replace(/\s+/g, '').toLowerCase();
   var region = req.body.region;
   var results = {};
+
+  // new crawler().configure({depth: 1})
+  //   .crawl("https://www.instagram.com/bjergsen/", function onSuccess(page) {
+  //     // console.log(page.content.getElementsByClass('_79dar'));
+  //     // var bod = cheerio.load(page.content);
+  //     // if (bod('._79dar')) {
+  //       // console.log(bod('._79dar').text())
+  //     // }
+  //     console.log(page.status)
+  //   });
+
+  // webcrawler for instagram window._sharedData = 
+  // this will probably need a lot of maintainence
+  var crawler = new Crawler().configure({depth: 1});
+  crawler.crawl({
+    // url: "https://www.instagram.com/bjergsen/",
+    // url: "https://www.instagram.com/sdasdasdasdasdasdjefk/",
+    url: "https://www.instagram.com/yiliangpeng/",
+    success: function(page) {
+      // console.log(page.content);
+      var bod = cheerio.load(page.content);
+      var str = bod('script').get()[3].children[0].data
+      var re = /"full_name":\s*(.*)\s*, "has_blocked_viewer":/i;
+      var thing = str.match(re)
+      console.log(thing[1])
+      // 0 3 5
+      // console.log( bod('script').get()); 
+    },
+    failure: function(page) {
+      console.log(page.url);
+    }
+  });
 
   // types
   // 1 - summoner does not exist
