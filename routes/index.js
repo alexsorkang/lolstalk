@@ -38,25 +38,25 @@ router.post('/', (req,res,next) => {
 
   // webcrawler for instagram window._sharedData = 
   // this will probably need a lot of maintainence
-  var crawler = new Crawler().configure({depth: 1});
-  crawler.crawl({
-    // url: "https://www.instagram.com/bjergsen/",
-    // url: "https://www.instagram.com/sdasdasdasdasdasdjefk/",
-    url: "https://www.instagram.com/yiliangpeng/",
-    success: function(page) {
-      // console.log(page.content);
-      var bod = cheerio.load(page.content);
-      var str = bod('script').get()[3].children[0].data
-      var re = /"full_name":\s*(.*)\s*, "has_blocked_viewer":/i;
-      var thing = str.match(re)
-      console.log(thing[1])
-      // 0 3 5
-      // console.log( bod('script').get()); 
-    },
-    failure: function(page) {
-      console.log(page.url);
-    }
-  });
+  // var crawler = new Crawler().configure({depth: 1});
+  // crawler.crawl({
+  //   // url: "https://www.instagram.com/bjergsen/",
+  //   // url: "https://www.instagram.com/sdasdasdasdasdasdjefk/",
+  //   url: "https://www.instagram.com/yiliangpeng/",
+  //   success: function(page) {
+  //     // console.log(page.content);
+  //     var bod = cheerio.load(page.content);
+  //     var str = bod('script').get()[3].children[0].data
+  //     var re = /"full_name":\s*(.*)\s*, "has_blocked_viewer":/i;
+  //     var thing = str.match(re)
+  //     console.log(thing[1])
+  //     // 0 3 5
+  //     // console.log( bod('script').get()); 
+  //   },
+  //   failure: function(page) {
+  //     console.log(page.url);
+  //   }
+  // });
 
   // types
   // 1 - summoner does not exist
@@ -81,12 +81,52 @@ router.post('/', (req,res,next) => {
           data1.participants.map((x) => {
             t.get('users/show', {screen_name: x.summonerName}, (err2, data2, response) => {
               lol.Static.getChampionById(x['championId'], {champData: 'image'}, (err3, data3) => {
-                results[x.teamId].push({summonerName:x.summonerName, realName:data2.name, championName:data3.name, championId:data3.id, image:data3.image})
+
+                var crawler = new Crawler().configure({depth: 1});
+                var url = "https://www.instagram.com/" + x.summonerName;
+                crawler.crawl({
+                  // url: "https://www.instagram.com/bjergsen/",
+                  // url: "https://www.instagram.com/sdasdasdasdasdasdjefk/",
+                  // url: "https://www.instagram.com/yiliangpeng/",
+                  url: url,
+                  success: function(page) {
+                    // console.log(page.content);
+                    var bod = cheerio.load(page.content);
+                    var str = bod('script').get()[3].children[0].data
+                    var re = /"full_name":\s*(.*)\s*, "has_blocked_viewer":/i;
+                    var thing = str.match(re)
+                    console.log("found: " + thing[1])
+                    console.log(page.url)
+                    // 0 3 5
+                    // console.log( bod('script').get()); 
+
+                    results[x.teamId].push({summonerName:x.summonerName, realName:[data2.name, thing[1]], championName:data3.name, championId:data3.id, image:data3.image})
                 
-                counter+=1;
-                if (counter == 10) {
-                  res.render('results', { title: 'Express', data: results, type:1});
-                }
+                    counter+=1;
+                    if (counter == 10) {
+                      res.render('results', { title: 'Express', data: results, type:1});
+                    }
+
+                  },
+                  failure: function(page) {
+                    // console.log(page.url);
+                    console.log("failed")
+                    console.log(page.url)
+                    results[x.teamId].push({summonerName:x.summonerName, realName:[data2.name], championName:data3.name, championId:data3.id, image:data3.image})
+                
+                    counter+=1;
+                    if (counter == 10) {
+                      res.render('results', { title: 'Express', data: results, type:1});
+                    }
+                  }
+                });
+
+                // results[x.teamId].push({summonerName:x.summonerName, realName:data2.name, championName:data3.name, championId:data3.id, image:data3.image})
+                
+                // counter+=1;
+                // if (counter == 10) {
+                //   res.render('results', { title: 'Express', data: results, type:1});
+                // }
               });
               
             });

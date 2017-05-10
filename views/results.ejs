@@ -63,7 +63,11 @@
                     <td><%= result.summonerName %></td>
 
                     <% if (result.realName) { %>
-                      <td><%= result.realName %></td>
+                      <td>
+                      <% for (elem in result.realName) { %>
+                        <%= result.realName[elem] %>
+                      <% } %>  
+                      </td>
                     <% } else { %>
                       <td>not found</td>
                     <% } %>
